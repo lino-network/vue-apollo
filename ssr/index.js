@@ -217,7 +217,6 @@ function prefetchQuery (isCacheFirst, apolloProvider, prefetchID, query, context
         for (let i of  queryOptions.query.definitions[0].selectionSet.selections) {
           let variables = {};
           for (let j of i.arguments) {
-            console.log(j.value.name);
             let variableName = j.value.name.value;
             variables[variableName] = (queryOptions.variables)()[variableName]
           }
@@ -256,31 +255,35 @@ exports.getStates = function (apolloProvider, options) {
 }
 
 function isEquivalent(a, b) {
-  // Create arrays of property names
+	if (typeof a !== typeof b) {
+  	return false;
+  }
+  if (typeof a !== 'object') {
+  	return a == b;
+  }
+  if (!a && !b) {
+  	return true;
+  } else if (!a || !b) {
+  	return false;
+  }
   var aProps = Object.getOwnPropertyNames(a);
   var bProps = Object.getOwnPropertyNames(b);
 
-  // If number of properties is different,
-  // objects are not equivalent
   if (aProps.length != bProps.length) {
       return false;
   }
-
   for (var i = 0; i < aProps.length; i++) {
       var propName = aProps[i];
-
-      // If values of same property are not equal,
-      // objects are not equivalent
-      if (a[propName] !== b[propName]) {
+      if (!(propName in b)) {
+      	return false;
+      }
+      if (!isEquivalent(a[propName], b[propName])) {
           return false;
       }
   }
 
-  // If we made it this far, objects
-  // are considered equivalent
   return true;
 }
-
 
 checkIsSameQuery = function (queryName, queryDefinition) {
   if (queryName.startsWith(queryDefinition.name)) {
@@ -289,6 +292,9 @@ checkIsSameQuery = function (queryName, queryDefinition) {
     // console.log('kkk', variableByQueryName);
     // console.log('------', queryDefinition.variables);
     // console.log('+++++++', JSON.parse(variableByQueryName));
+    // console.log(queryName);
+    // console.log(queryDefinition.variables);
+    // console.log(variableByQueryName);
     if (isEquivalent(queryDefinition.variables, JSON.parse(variableByQueryName || '{}'))) {
       console.log('+++++++++++++++++++', queryName)
       return true;
