@@ -10,6 +10,9 @@ const config = exports.config = {
   suppressRenderErrors: false,
 }
 
+let prefetchIDs = {
+}
+
 exports.install = function (Vue, options = {}) {
   Globals.Vue = Vue
   Object.assign(config, options)
@@ -23,11 +26,11 @@ exports.mockInstance = function (plugin) {
   config.fakeInstanceMocks.push(plugin)
 }
 
-exports.prefetchAll = function (apolloProvider, components = [], context = {}) {
+exports.prefetchAll = function (isCacheFirst, apolloProvider, prefetchID, components = [], context = {}) {
   const globalPrefetchs = config.globalPrefetchs.map(handler => handler(context)).filter(Boolean)
   return exports.getQueriesFromTree(components.concat(globalPrefetchs), context)
     .then(queries => Promise.all(queries.map(
-      query => prefetchQuery(apolloProvider, query, context)
+      query => prefetchQuery(isCacheFirst, apolloProvider, prefetchID, query, context)
     )))
 }
 
@@ -120,7 +123,7 @@ function prefetchComponent (component, vm, queries) {
   }
 }
 
-function prefetchQuery (apolloProvider, query, context) {
+function prefetchQuery (isCacheFirst, apolloProvider, prefetchID, query, context) {
   try {
     let variables
 
@@ -202,6 +205,18 @@ function prefetchQuery (apolloProvider, query, context) {
       options.fetchPolicy = config.fetchPolicy
     }
 
+    if (isCacheFirst) {
+      if (prefetchID !== 0) {
+        if (!prefetchIDs[prefetchID]) {
+          prefetchIDs[prefetchID] = {time: new Date().getTime(), value: []};
+        } 
+        let queryName = queryOptions.query.definitions[0].name.value;
+        let decap = queryName[0].toLowerCase() + queryName.slice(1);
+        prefetchIDs[prefetchID].value.push(decap);
+      }
+      options.fetchPolicy = 'cache-first';
+    }
+
     return client.query(options)
   } catch (e) {
     console.log(chalk.red(`[ERROR] While prefetching query`), query, chalk.grey(`Error stack trace:`))
@@ -219,6 +234,45 @@ exports.getStates = function (apolloProvider, options) {
     const state = client.cache.extract()
     states[`${finalOptions.exportNamespace}${key}`] = state
   }
+  return states
+}
+
+exports.getStatesK = function (prefetchID, apolloProvider, options) {
+  const finalOptions = Object.assign({}, {
+    exportNamespace: '',
+  }, options)
+  const states = {}
+  function recursiveAddNode(a, result, state) {
+    for (let k in a) {
+      if (k == 'id') {
+        result[a[k]] = state[a[k]];
+      } else if (typeof a[k] === 'object') {
+        let m = a[k].id
+        result[m] = state[m];
+        recursiveAddNode(state[m], result, state)
+      }
+    }
+  }
+  for (const key in apolloProvider.clients) {
+    const client = apolloProvider.clients[key]
+    const state = client.cache.extract()
+    let result = {}
+    if (prefetchID in prefetchIDs) {
+      result['ROOT_QUERY'] = state['ROOT_QUERY'];
+      for (let i in state['ROOT_QUERY']) {
+        for (let j of prefetchIDs[prefetchID].value) {
+          // console.log('i: ', i, 'j: ', j);
+          if (i.indexOf(j) > -1) {
+              recursiveAddNode(state['ROOT_QUERY'][i], result, state)
+          }
+        }
+      }
+      states[`${finalOptions.exportNamespace}${key}`] = result;
+    } else {
+      states[`${finalOptions.exportNamespace}${key}`] = state
+    }
+  }
+  delete prefetchID[prefetchID]
   return states
 }
 
