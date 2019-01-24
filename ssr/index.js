@@ -210,9 +210,27 @@ function prefetchQuery (isCacheFirst, apolloProvider, prefetchID, query, context
         if (!prefetchIDs[prefetchID]) {
           prefetchIDs[prefetchID] = {time: new Date().getTime(), value: []};
         } 
-        let queryName = queryOptions.query.definitions[0].name.value;
-        let decap = queryName[0].toLowerCase() + queryName.slice(1);
-        prefetchIDs[prefetchID].value.push(decap);
+        // let queryName = queryOptions.query.definitions[0].name.value;
+        // console.log(queryOptions.query.definitions);
+        // console.log(queryOptions.query.definitions[0].variableDefinitions);
+        // console.log(queryOptions.query.definitions[0].selectionSet.selections.name.value);
+        for (let i of  queryOptions.query.definitions[0].selectionSet.selections) {
+          let variables = {};
+          for (let j of i.arguments) {
+            console.log(j.value.name);
+            let variableName = j.value.name.value;
+            variables[variableName] = (queryOptions.variables)()[variableName]
+          }
+          prefetchIDs[prefetchID].value.push({ name: i.name.value, variables: variables });
+        }
+        // console.log((queryOptions.variables)());
+        // console.log(queryOptions.query.definitions[0].selectionSet.selections); 
+        // console.log(queryOptions.query.definitions[0].selectionSet.selections[0].arguments);
+        // console.log(queryOptions.query.definitions[0].selectionSet.selections[0].arguments[0].value.name);
+        // console.log(JSON.stringify((queryOptions.variables)()));
+
+        // let decap = queryName[0].toLowerCase() + queryName.slice(1);
+        // prefetchIDs[prefetchID].value.push(decap);
       }
       options.fetchPolicy = 'cache-first';
     }
@@ -237,6 +255,49 @@ exports.getStates = function (apolloProvider, options) {
   return states
 }
 
+function isEquivalent(a, b) {
+  // Create arrays of property names
+  var aProps = Object.getOwnPropertyNames(a);
+  var bProps = Object.getOwnPropertyNames(b);
+
+  // If number of properties is different,
+  // objects are not equivalent
+  if (aProps.length != bProps.length) {
+      return false;
+  }
+
+  for (var i = 0; i < aProps.length; i++) {
+      var propName = aProps[i];
+
+      // If values of same property are not equal,
+      // objects are not equivalent
+      if (a[propName] !== b[propName]) {
+          return false;
+      }
+  }
+
+  // If we made it this far, objects
+  // are considered equivalent
+  return true;
+}
+
+
+checkIsSameQuery = function (queryName, queryDefinition) {
+  if (queryName.startsWith(queryDefinition.name)) {
+    let variableByQueryName = queryName.slice(queryDefinition.name.length + 1);
+    variableByQueryName = variableByQueryName.slice(0, variableByQueryName.length - 1);
+    // console.log('kkk', variableByQueryName);
+    // console.log('------', queryDefinition.variables);
+    // console.log('+++++++', JSON.parse(variableByQueryName));
+    if (isEquivalent(queryDefinition.variables, JSON.parse(variableByQueryName || '{}'))) {
+      console.log('+++++++++++++++++++', variableByQueryName)
+      return true;
+    }
+  } else {
+    return false
+  }
+}
+
 exports.getStatesK = function (prefetchID, apolloProvider, options) {
   const finalOptions = Object.assign({}, {
     exportNamespace: '',
@@ -258,11 +319,14 @@ exports.getStatesK = function (prefetchID, apolloProvider, options) {
     const state = client.cache.extract()
     let result = {}
     if (prefetchID in prefetchIDs) {
+      // console.log('ROOT_QUERY: ', state['ROOT_QUERY'])
       result['ROOT_QUERY'] = state['ROOT_QUERY'];
       for (let i in state['ROOT_QUERY']) {
         for (let j of prefetchIDs[prefetchID].value) {
           // console.log('i: ', i, 'j: ', j);
-          if (i.indexOf(j) > -1) {
+          // console.log(j, 'j');
+          // console.log(i, 'i');
+          if (checkIsSameQuery(i, j)) {
               recursiveAddNode(state['ROOT_QUERY'][i], result, state)
           }
         }
