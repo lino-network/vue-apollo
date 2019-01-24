@@ -246,7 +246,7 @@ exports.getStatesK = function (prefetchID, apolloProvider, options) {
     for (let k in a) {
       if (k == 'id') {
         result[a[k]] = state[a[k]];
-      } else if (typeof a[k] === 'object') {
+      } else if (typeof a[k] === 'object' && a[k]) {
         let m = a[k].id
         result[m] = state[m];
         recursiveAddNode(state[m], result, state)
