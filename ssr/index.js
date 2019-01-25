@@ -326,17 +326,20 @@ exports.getStatesK = function (prefetchID, apolloProvider, options) {
     let result = {}
     if (prefetchID in prefetchIDs) {
       // console.log('ROOT_QUERY: ', state['ROOT_QUERY'])
-      result['ROOT_QUERY'] = state['ROOT_QUERY'];
+      let root_query = {}
+      // result['ROOT_QUERY'] = state['ROOT_QUERY'];
       for (let i in state['ROOT_QUERY']) {
         for (let j of prefetchIDs[prefetchID].value) {
           // console.log('i: ', i, 'j: ', j);
           // console.log(j, 'j');
           // console.log(i, 'i');
           if (checkIsSameQuery(i, j)) {
-              recursiveAddNode(state['ROOT_QUERY'][i], result, state)
+            root_query[i] = state['ROOT_QUERY'][i]
+            recursiveAddNode(state['ROOT_QUERY'][i], result, state)
           }
         }
       }
+      result['ROOT_QUERY'] = root_query;
       states[`${finalOptions.exportNamespace}${key}`] = result;
     } else {
       states[`${finalOptions.exportNamespace}${key}`] = state
