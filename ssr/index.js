@@ -296,7 +296,7 @@ checkIsSameQuery = function (queryName, queryDefinition) {
     // console.log(queryDefinition.variables);
     // console.log(variableByQueryName);
     if (isEquivalent(queryDefinition.variables, JSON.parse(variableByQueryName || '{}'))) {
-      console.log('+++++++++++++++++++', queryName)
+      // console.log('+++++++++++++++++++', queryName)
       return true;
     }
   } else {
