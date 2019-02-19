@@ -50,6 +50,8 @@ function proxyData () {
   }
 }
 
+let prefetchIDs = {}
+
 function launch () {
   const apolloProvider = this.$apolloProvider
 
@@ -85,14 +87,27 @@ function launch () {
       enumerable: true,
       configurable: true,
     })
-
     // watchQuery
     for (let key in apollo) {
       if (key.charAt(0) !== '$') {
-        let options = apollo[key]
-        const smart = this.$apollo.addSmartQuery(key, options)
+        let options = apollo[key];
+        let prefetchID = this.$store.state.userMeta.userMeta.prefetchID;
         if (options.prefetch !== false && apollo.$prefetch !== false) {
-          this.$_apolloPromises.push(smart.firstRun)
+          if (!prefetchIDs[prefetchID]) {
+            prefetchIDs[prefetchID] = {time: new Date().getTime(), value: []};
+          } 
+          for (let i of  options.query.definitions[0].selectionSet.selections) {
+            let variables = {};
+            for (let j of i.arguments) {
+              let variableName = j.value.name.value;
+              variables[variableName] = (options.variables)()[variableName]
+            }
+            prefetchIDs[prefetchID].value.push({ name: i.name.value, variables: variables });
+          }
+          options.fetchPolicy = 'cache-first';
+          this.$_apolloPromises.push(this.$apollo.addSmartQuery(key, JSON.parse(JSON.stringify(options))).firstRun);
+          options.fetchPolicy = 'network-only';
+          this.$apollo.addSmartQuery(key, JSON.parse(JSON.stringify(options)));
         }
       }
     }
