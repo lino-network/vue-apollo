@@ -1909,7 +1909,7 @@
                 try {
                   for (var _iterator2 = i.arguments[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
                     var j = _step2.value;
-                    var variableName = j.value.name.value;
+                    var variableName = j.name.value;
                     variables[variableName] = options.variables()[variableName];
                   }
                 } catch (err) {
