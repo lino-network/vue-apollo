@@ -1,5 +1,3 @@
-import { prefetchIDs } from '../src/mixin.js'
-
 exports.getStates = function (apolloProvider, options) {
   const finalOptions = Object.assign({}, {
     exportNamespace: '',
