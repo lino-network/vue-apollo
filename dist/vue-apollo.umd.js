@@ -739,11 +739,11 @@
 
       _this = _possibleConstructorReturn(this, _getPrototypeOf(SmartQuery).call(this, vm, key, options, false));
 
-      _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "type", 'query');
+      _defineProperty(_assertThisInitialized(_this), "type", 'query');
 
-      _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "vueApolloSpecialKeys", VUE_APOLLO_QUERY_KEYWORDS);
+      _defineProperty(_assertThisInitialized(_this), "vueApolloSpecialKeys", VUE_APOLLO_QUERY_KEYWORDS);
 
-      _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "_loading", false);
+      _defineProperty(_assertThisInitialized(_this), "_loading", false);
 
       _this.firstRun = new Promise(function (resolve, reject) {
         _this._firstRunResolve = resolve;
@@ -1110,9 +1110,9 @@
 
       _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(SmartSubscription)).call.apply(_getPrototypeOf2, [this].concat(args)));
 
-      _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "type", 'subscription');
+      _defineProperty(_assertThisInitialized(_this), "type", 'subscription');
 
-      _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "vueApolloSpecialKeys", ['variables', 'result', 'error', 'throttle', 'debounce', 'linkedQuery']);
+      _defineProperty(_assertThisInitialized(_this), "vueApolloSpecialKeys", ['variables', 'result', 'error', 'throttle', 'debounce', 'linkedQuery']);
 
       return _this;
     }
@@ -1843,6 +1843,8 @@
     }
   }
 
+  var prefetchIDs = {};
+
   function launch() {
     var _this2 = this;
 
@@ -1882,10 +1884,73 @@
       for (var key in apollo) {
         if (key.charAt(0) !== '$') {
           var options = apollo[key];
-          var smart = this.$apollo.addSmartQuery(key, options);
+          var prefetchID = this.$store.state.userMeta.userMeta.prefetchID;
 
           if (options.prefetch !== false && apollo.$prefetch !== false) {
-            this.$_apolloPromises.push(smart.firstRun);
+            if (!prefetchIDs[prefetchID]) {
+              prefetchIDs[prefetchID] = {
+                time: new Date().getTime(),
+                value: []
+              };
+            }
+
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+              for (var _iterator = options.query.definitions[0].selectionSet.selections[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                var i = _step.value;
+                var variables = {};
+                var _iteratorNormalCompletion2 = true;
+                var _didIteratorError2 = false;
+                var _iteratorError2 = undefined;
+
+                try {
+                  for (var _iterator2 = i.arguments[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                    var j = _step2.value;
+                    var variableName = j.value.name.value;
+                    variables[variableName] = options.variables()[variableName];
+                  }
+                } catch (err) {
+                  _didIteratorError2 = true;
+                  _iteratorError2 = err;
+                } finally {
+                  try {
+                    if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+                      _iterator2.return();
+                    }
+                  } finally {
+                    if (_didIteratorError2) {
+                      throw _iteratorError2;
+                    }
+                  }
+                }
+
+                prefetchIDs[prefetchID].value.push({
+                  name: i.name.value,
+                  variables: variables
+                });
+              }
+            } catch (err) {
+              _didIteratorError = true;
+              _iteratorError = err;
+            } finally {
+              try {
+                if (!_iteratorNormalCompletion && _iterator.return != null) {
+                  _iterator.return();
+                }
+              } finally {
+                if (_didIteratorError) {
+                  throw _iteratorError;
+                }
+              }
+            }
+
+            options.fetchPolicy = 'cache-first';
+            this.$_apolloPromises.push(this.$apollo.addSmartQuery(key, JSON.parse(JSON.stringify(options))).firstRun);
+            options.fetchPolicy = 'network-only';
+            this.$apollo.addSmartQuery(key, JSON.parse(JSON.stringify(options)));
           }
         }
       }

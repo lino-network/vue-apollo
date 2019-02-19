@@ -50,7 +50,7 @@ function proxyData () {
   }
 }
 
-let prefetchIDs = {}
+export let prefetchIDs = {}
 
 function launch () {
   const apolloProvider = this.$apolloProvider
