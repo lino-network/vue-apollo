@@ -1839,6 +1839,7 @@ function proxyData() {
   }
 }
 
+var prefetchIDs = {};
 exports.prefetchIDs = {};
 
 function launch() {

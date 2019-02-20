@@ -1845,6 +1845,7 @@
     }
   }
 
+  var prefetchIDs = {};
   exports.prefetchIDs = {};
 
   function launch() {
