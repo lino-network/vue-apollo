@@ -1947,8 +1947,6 @@
                     } else {
                       variables[variableName] = options.variables.call(this)[variableName];
                     }
-
-                    variables[variableName] = options.variables.call(this)[variableName];
                   }
                 } catch (err) {
                   _didIteratorError2 = true;

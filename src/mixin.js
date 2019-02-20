@@ -112,7 +112,6 @@ function launch () {
               } else {
                 variables[variableName] = options.variables.call(this)[variableName];
               }
-              variables[variableName] = options.variables.call(this)[variableName]
             }
             prefetchIDs[prefetchID].value.push({ name: i.name.value, variables: variables });
           }

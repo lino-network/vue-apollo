@@ -1,3 +1,5 @@
+let prefetchIDs = require('../dist/vue-apollo.umd.js').prefetchIDs;
+
 exports.getStates = function (apolloProvider, options) {
   const finalOptions = Object.assign({}, {
     exportNamespace: '',
@@ -74,16 +76,15 @@ exports.getStatesK = function (prefetchID, apolloProvider, options) {
     for (let k in a) {
       if (k == 'id') {
         result[a[k]] = state[a[k]];
-        recursiveAddNode(state[a[k]], result, state)
+        //TODO check if rootquery alwasy have such plain object
+        if (a[k] !== fromID) {
+          recursiveAddNode(state[a[k]], result, state, a[k])
+        }
       } else if (typeof a[k] === 'object' && a[k]) {
         if (a[k].length !== undefined) {
           for (let n of a[k]) {
             recursiveAddNode(n, result, state)
           }
-        } else if (a[k].id !== undefined){
-          let m = a[k].id
-          result[m] = state[m];
-          recursiveAddNode(state[m], result, state)
         } else {
           recursiveAddNode(a[k], result, state)
         }
