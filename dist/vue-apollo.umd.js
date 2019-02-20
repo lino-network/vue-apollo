@@ -1845,7 +1845,7 @@
     }
   }
 
-  var prefetchIDs = {};
+  exports.prefetchIDs = {};
 
   function launch() {
     var _this2 = this;
@@ -1912,6 +1912,42 @@
                   for (var _iterator2 = i.arguments[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
                     var j = _step2.value;
                     var variableName = j.name.value;
+
+                    if (j.value && j.value.kind === 'ObjectValue') {
+                      var _iteratorNormalCompletion3 = true;
+                      var _didIteratorError3 = false;
+                      var _iteratorError3 = undefined;
+
+                      try {
+                        for (var _iterator3 = j.value.fields[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                          var _i = _step3.value;
+
+                          if (variables[variableName] === undefined) {
+                            variables[variableName] = {};
+                          }
+
+                          if (options.variables.call(this)[_i.name.value] !== undefined) {
+                            variables[variableName][_i.name.value] = options.variables.call(this)[_i.name.value];
+                          }
+                        }
+                      } catch (err) {
+                        _didIteratorError3 = true;
+                        _iteratorError3 = err;
+                      } finally {
+                        try {
+                          if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
+                            _iterator3.return();
+                          }
+                        } finally {
+                          if (_didIteratorError3) {
+                            throw _iteratorError3;
+                          }
+                        }
+                      }
+                    } else {
+                      variables[variableName] = options.variables.call(this)[variableName];
+                    }
+
                     variables[variableName] = options.variables.call(this)[variableName];
                   }
                 } catch (err) {
@@ -1950,9 +1986,9 @@
             }
 
             options.fetchPolicy = 'cache-first';
-            this.$_apolloPromises.push(this.$apollo.addSmartQuery(key, JSON.parse(JSON.stringify(options))).firstRun);
+            this.$_apolloPromises.push(this.$apollo.addSmartQuery(key, options).firstRun);
             options.fetchPolicy = 'network-only';
-            this.$apollo.addSmartQuery(key, JSON.parse(JSON.stringify(options)), true);
+            this.$apollo.addSmartQuery(key, options, true);
           }
         }
       }
