@@ -72,7 +72,7 @@ exports.getStatesK = function (prefetchID, apolloProvider, options) {
     exportNamespace: '',
   }, options)
   const states = {}
-  function recursiveAddNode(a, result, state) {
+  function recursiveAddNode(a, result, state, fromID) {
     for (let k in a) {
       if (k == 'id') {
         result[a[k]] = state[a[k]];
