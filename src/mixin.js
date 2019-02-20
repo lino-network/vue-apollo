@@ -100,14 +100,14 @@ function launch () {
             let variables = {};
             for (let j of i.arguments) {
               let variableName = j.name.value;
-              variables[variableName] = (options.variables)()[variableName]
+              variables[variableName] = options.variables.call(this)[variableName]
             }
             prefetchIDs[prefetchID].value.push({ name: i.name.value, variables: variables });
           }
           options.fetchPolicy = 'cache-first';
           this.$_apolloPromises.push(this.$apollo.addSmartQuery(key, JSON.parse(JSON.stringify(options))).firstRun);
           options.fetchPolicy = 'network-only';
-          this.$apollo.addSmartQuery(key, JSON.parse(JSON.stringify(options)));
+          this.$apollo.addSmartQuery(key, JSON.parse(JSON.stringify(options)), true);
         }
       }
     }

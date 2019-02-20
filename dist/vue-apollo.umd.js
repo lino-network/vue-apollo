@@ -719,6 +719,7 @@
       var _this;
 
       var autostart = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+      var forceDumb = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
 
       _classCallCheck(this, SmartQuery);
 
@@ -754,7 +755,7 @@
         _this.options.fetchPolicy = 'network-only';
       }
 
-      if (!options.manual) {
+      if (!options.manual && !forceDumb) {
         _this.hasDataField = _this.vm.$data.hasOwnProperty(key);
 
         if (_this.hasDataField) {
@@ -1282,6 +1283,7 @@
       value: function addSmartQuery(key, options) {
         var _this3 = this;
 
+        var forceDumb = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
         var finalOptions = utils_5(options, this.vm);
         var apollo = this.vm.$options.apollo;
         var defaultOptions = this.provider.defaultOptions;
@@ -1304,7 +1306,7 @@
           }
         }
 
-        var smart = this.queries[key] = new SmartQuery(this.vm, key, finalOptions, false);
+        var smart = this.queries[key] = new SmartQuery(this.vm, key, finalOptions, false, forceDumb);
 
         if (!this.vm.$isServer || finalOptions.prefetch !== false) {
           smart.autostart();
@@ -1910,7 +1912,7 @@
                   for (var _iterator2 = i.arguments[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
                     var j = _step2.value;
                     var variableName = j.name.value;
-                    variables[variableName] = options.variables()[variableName];
+                    variables[variableName] = options.variables.call(this)[variableName];
                   }
                 } catch (err) {
                   _didIteratorError2 = true;
@@ -1950,7 +1952,7 @@
             options.fetchPolicy = 'cache-first';
             this.$_apolloPromises.push(this.$apollo.addSmartQuery(key, JSON.parse(JSON.stringify(options))).firstRun);
             options.fetchPolicy = 'network-only';
-            this.$apollo.addSmartQuery(key, JSON.parse(JSON.stringify(options)));
+            this.$apollo.addSmartQuery(key, JSON.parse(JSON.stringify(options)), true);
           }
         }
       }
