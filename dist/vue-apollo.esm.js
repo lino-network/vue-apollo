@@ -1839,8 +1839,8 @@ function proxyData() {
   }
 }
 
-var prefetchIDs = prefetchIDs;
-exports.prefetchIDs = {};
+var prefetchIDs = {};
+exports.prefetchIDs = prefetchIDs;
 
 function launch() {
   var _this2 = this;
