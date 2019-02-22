@@ -1846,7 +1846,6 @@
   }
 
   var prefetchIDs = {};
-  exports.prefetchIDs = prefetchIDs;
 
   function launch() {
     var _this2 = this;
@@ -2024,7 +2023,6 @@
       this.$_apollo = null;
     }
   }
-
   function installMixin(Vue, vueVersion) {
     Vue.mixin(_objectSpread({}, vueVersion === '1' ? {
       init: initProvider
@@ -2120,6 +2118,7 @@
     GlobalVue.use(ApolloProvider);
   }
 
+  exports.prefetchIDs = prefetchIDs;
   exports.install = install;
   exports.ApolloProvider = ApolloProvider$1;
   exports.ApolloQuery = ApolloQuery;

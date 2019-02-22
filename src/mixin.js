@@ -50,8 +50,7 @@ function proxyData () {
   }
 }
 
-let prefetchIDs = {}
-exports.prefetchIDs = prefetchIDs;
+var prefetchIDs = {}
 
 function launch () {
   const apolloProvider = this.$apolloProvider
@@ -156,6 +155,8 @@ function destroy () {
     this.$_apollo = null
   }
 }
+
+export { prefetchIDs };
 
 export function installMixin (Vue, vueVersion) {
   Vue.mixin({

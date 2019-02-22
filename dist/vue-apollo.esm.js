@@ -1840,7 +1840,6 @@ function proxyData() {
 }
 
 var prefetchIDs = {};
-exports.prefetchIDs = prefetchIDs;
 
 function launch() {
   var _this2 = this;
@@ -2018,7 +2017,6 @@ function destroy() {
     this.$_apollo = null;
   }
 }
-
 function installMixin(Vue, vueVersion) {
   Vue.mixin(_objectSpread({}, vueVersion === '1' ? {
     init: initProvider
@@ -2115,4 +2113,4 @@ if (GlobalVue) {
 }
 
 export default ApolloProvider;
-export { install, ApolloProvider$1 as ApolloProvider, ApolloQuery, ApolloSubscribeToMore, ApolloMutation };
+export { prefetchIDs, install, ApolloProvider$1 as ApolloProvider, ApolloQuery, ApolloSubscribeToMore, ApolloMutation };
