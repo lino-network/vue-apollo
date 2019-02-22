@@ -91,38 +91,42 @@ function launch () {
     for (let key in apollo) {
       if (key.charAt(0) !== '$') {
         let options = apollo[key];
-        let prefetchID = this.$store.state.userMeta.userMeta.prefetchID;
-        if (options.prefetch !== false && apollo.$prefetch !== false) {
-          if (!prefetchIDs[prefetchID]) {
-            prefetchIDs[prefetchID] = {time: new Date().getTime(), value: []};
-          } 
-          for (let i of options.query.definitions[0].selectionSet.selections) {
-            let variables = {};
-            for (let j of i.arguments) {
-              let variableName = j.name.value;
-              if (j.value && j.value.kind === 'ObjectValue') {
-                for (let i of j.value.fields) {
-                  if (variables[variableName] === undefined) {
-                    variables[variableName] = {}
-                  }
-                  if (options.variables.call(this)[i.name.value] !== undefined) {
-                    variables[variableName][i.name.value] = options.variables.call(this)[i.name.value];
-                  } else {
-                    if (i.value.value !== undefined) {
-                      variables[variableName][i.name.value] = i.value.value
+        if (this.$isServer) {
+          let prefetchID = this.$store.state.userMeta.userMeta.prefetchID;
+          if (options.prefetch !== false && apollo.$prefetch !== false) {
+            if (!prefetchIDs[prefetchID]) {
+              prefetchIDs[prefetchID] = {time: new Date().getTime(), value: []};
+            } 
+            for (let i of options.query.definitions[0].selectionSet.selections) {
+              let variables = {};
+              for (let j of i.arguments) {
+                let variableName = j.name.value;
+                if (j.value && j.value.kind === 'ObjectValue') {
+                  for (let i of j.value.fields) {
+                    if (variables[variableName] === undefined) {
+                      variables[variableName] = {}
+                    }
+                    if (options.variables.call(this)[i.name.value] !== undefined) {
+                      variables[variableName][i.name.value] = options.variables.call(this)[i.name.value];
+                    } else {
+                      if (i.value.value !== undefined) {
+                        variables[variableName][i.name.value] = i.value.value
+                      }
                     }
                   }
+                } else {
+                  variables[variableName] = options.variables.call(this)[variableName];
                 }
-              } else {
-                variables[variableName] = options.variables.call(this)[variableName];
               }
+              prefetchIDs[prefetchID].value.push({ name: i.name.value, variables: variables });
             }
-            prefetchIDs[prefetchID].value.push({ name: i.name.value, variables: variables });
+            options.fetchPolicy = 'cache-first';
+            this.$_apolloPromises.push(this.$apollo.addSmartQuery(key, options).firstRun);
+            options.fetchPolicy = 'network-only';
+            this.$apollo.addSmartQuery(key, options, true);
           }
-          options.fetchPolicy = 'cache-first';
-          this.$_apolloPromises.push(this.$apollo.addSmartQuery(key, options).firstRun);
-          options.fetchPolicy = 'network-only';
-          this.$apollo.addSmartQuery(key, options, true);
+        } else {
+          this.$apollo.addSmartQuery(key, options)
         }
       }
     }

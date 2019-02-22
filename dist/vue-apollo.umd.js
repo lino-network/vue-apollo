@@ -1886,111 +1886,116 @@
       for (var key in apollo) {
         if (key.charAt(0) !== '$') {
           var options = apollo[key];
-          var prefetchID = this.$store.state.userMeta.userMeta.prefetchID;
 
-          if (options.prefetch !== false && apollo.$prefetch !== false) {
-            if (!prefetchIDs[prefetchID]) {
-              prefetchIDs[prefetchID] = {
-                time: new Date().getTime(),
-                value: []
-              };
-            }
+          if (this.$isServer) {
+            var prefetchID = this.$store.state.userMeta.userMeta.prefetchID;
 
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
+            if (options.prefetch !== false && apollo.$prefetch !== false) {
+              if (!prefetchIDs[prefetchID]) {
+                prefetchIDs[prefetchID] = {
+                  time: new Date().getTime(),
+                  value: []
+                };
+              }
 
-            try {
-              for (var _iterator = options.query.definitions[0].selectionSet.selections[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                var i = _step.value;
-                var variables = {};
-                var _iteratorNormalCompletion2 = true;
-                var _didIteratorError2 = false;
-                var _iteratorError2 = undefined;
+              var _iteratorNormalCompletion = true;
+              var _didIteratorError = false;
+              var _iteratorError = undefined;
 
-                try {
-                  for (var _iterator2 = i.arguments[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                    var j = _step2.value;
-                    var variableName = j.name.value;
+              try {
+                for (var _iterator = options.query.definitions[0].selectionSet.selections[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                  var i = _step.value;
+                  var variables = {};
+                  var _iteratorNormalCompletion2 = true;
+                  var _didIteratorError2 = false;
+                  var _iteratorError2 = undefined;
 
-                    if (j.value && j.value.kind === 'ObjectValue') {
-                      var _iteratorNormalCompletion3 = true;
-                      var _didIteratorError3 = false;
-                      var _iteratorError3 = undefined;
+                  try {
+                    for (var _iterator2 = i.arguments[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                      var j = _step2.value;
+                      var variableName = j.name.value;
 
-                      try {
-                        for (var _iterator3 = j.value.fields[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                          var _i = _step3.value;
+                      if (j.value && j.value.kind === 'ObjectValue') {
+                        var _iteratorNormalCompletion3 = true;
+                        var _didIteratorError3 = false;
+                        var _iteratorError3 = undefined;
 
-                          if (variables[variableName] === undefined) {
-                            variables[variableName] = {};
+                        try {
+                          for (var _iterator3 = j.value.fields[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                            var _i = _step3.value;
+
+                            if (variables[variableName] === undefined) {
+                              variables[variableName] = {};
+                            }
+
+                            if (options.variables.call(this)[_i.name.value] !== undefined) {
+                              variables[variableName][_i.name.value] = options.variables.call(this)[_i.name.value];
+                            } else {
+                              if (_i.value.value !== undefined) {
+                                variables[variableName][_i.name.value] = _i.value.value;
+                              }
+                            }
                           }
-
-                          if (options.variables.call(this)[_i.name.value] !== undefined) {
-                            variables[variableName][_i.name.value] = options.variables.call(this)[_i.name.value];
-                          } else {
-                            if (_i.value.value !== undefined) {
-                              variables[variableName][_i.name.value] = _i.value.value;
+                        } catch (err) {
+                          _didIteratorError3 = true;
+                          _iteratorError3 = err;
+                        } finally {
+                          try {
+                            if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
+                              _iterator3.return();
+                            }
+                          } finally {
+                            if (_didIteratorError3) {
+                              throw _iteratorError3;
                             }
                           }
                         }
-                      } catch (err) {
-                        _didIteratorError3 = true;
-                        _iteratorError3 = err;
-                      } finally {
-                        try {
-                          if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
-                            _iterator3.return();
-                          }
-                        } finally {
-                          if (_didIteratorError3) {
-                            throw _iteratorError3;
-                          }
-                        }
+                      } else {
+                        variables[variableName] = options.variables.call(this)[variableName];
                       }
-                    } else {
-                      variables[variableName] = options.variables.call(this)[variableName];
                     }
-                  }
-                } catch (err) {
-                  _didIteratorError2 = true;
-                  _iteratorError2 = err;
-                } finally {
-                  try {
-                    if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-                      _iterator2.return();
-                    }
+                  } catch (err) {
+                    _didIteratorError2 = true;
+                    _iteratorError2 = err;
                   } finally {
-                    if (_didIteratorError2) {
-                      throw _iteratorError2;
+                    try {
+                      if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+                        _iterator2.return();
+                      }
+                    } finally {
+                      if (_didIteratorError2) {
+                        throw _iteratorError2;
+                      }
                     }
                   }
-                }
 
-                prefetchIDs[prefetchID].value.push({
-                  name: i.name.value,
-                  variables: variables
-                });
-              }
-            } catch (err) {
-              _didIteratorError = true;
-              _iteratorError = err;
-            } finally {
-              try {
-                if (!_iteratorNormalCompletion && _iterator.return != null) {
-                  _iterator.return();
+                  prefetchIDs[prefetchID].value.push({
+                    name: i.name.value,
+                    variables: variables
+                  });
                 }
+              } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
               } finally {
-                if (_didIteratorError) {
-                  throw _iteratorError;
+                try {
+                  if (!_iteratorNormalCompletion && _iterator.return != null) {
+                    _iterator.return();
+                  }
+                } finally {
+                  if (_didIteratorError) {
+                    throw _iteratorError;
+                  }
                 }
               }
-            }
 
-            options.fetchPolicy = 'cache-first';
-            this.$_apolloPromises.push(this.$apollo.addSmartQuery(key, options).firstRun);
-            options.fetchPolicy = 'network-only';
-            this.$apollo.addSmartQuery(key, options, true);
+              options.fetchPolicy = 'cache-first';
+              this.$_apolloPromises.push(this.$apollo.addSmartQuery(key, options).firstRun);
+              options.fetchPolicy = 'network-only';
+              this.$apollo.addSmartQuery(key, options, true);
+            }
+          } else {
+            this.$apollo.addSmartQuery(key, options);
           }
         }
       }
