@@ -1878,7 +1878,7 @@ function launch() {
         var options = apollo[key];
         var smart = this.$apollo.addSmartQuery(key, options);
 
-        if (options.prefetch !== false && apollo.$prefetch !== false) {
+        if (options.prefetch !== false && apollo.$prefetch !== false && options.prefetch !== undefined) {
           this.$_apolloPromises.push(smart.firstRun);
         }
       }
