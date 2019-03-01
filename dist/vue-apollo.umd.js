@@ -739,11 +739,11 @@
 
       _this = _possibleConstructorReturn(this, _getPrototypeOf(SmartQuery).call(this, vm, key, options, false));
 
-      _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "type", 'query');
+      _defineProperty(_assertThisInitialized(_this), "type", 'query');
 
-      _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "vueApolloSpecialKeys", VUE_APOLLO_QUERY_KEYWORDS);
+      _defineProperty(_assertThisInitialized(_this), "vueApolloSpecialKeys", VUE_APOLLO_QUERY_KEYWORDS);
 
-      _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "_loading", false);
+      _defineProperty(_assertThisInitialized(_this), "_loading", false);
 
       _this.firstRun = new Promise(function (resolve, reject) {
         _this._firstRunResolve = resolve;
@@ -1110,9 +1110,9 @@
 
       _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(SmartSubscription)).call.apply(_getPrototypeOf2, [this].concat(args)));
 
-      _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "type", 'subscription');
+      _defineProperty(_assertThisInitialized(_this), "type", 'subscription');
 
-      _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "vueApolloSpecialKeys", ['variables', 'result', 'error', 'throttle', 'debounce', 'linkedQuery']);
+      _defineProperty(_assertThisInitialized(_this), "vueApolloSpecialKeys", ['variables', 'result', 'error', 'throttle', 'debounce', 'linkedQuery']);
 
       return _this;
     }
@@ -1882,10 +1882,13 @@
       for (var key in apollo) {
         if (key.charAt(0) !== '$') {
           var options = apollo[key];
-          var smart = this.$apollo.addSmartQuery(key, options);
 
-          if (options.prefetch !== false && apollo.$prefetch !== false && options.prefetch !== undefined) {
-            this.$_apolloPromises.push(smart.firstRun);
+          if (process.client || options.prefetch !== undefined && options.prefetch !== false && apollo.$prefetch !== false) {
+            var smart = this.$apollo.addSmartQuery(key, options);
+
+            if (process.server) {
+              this.$_apolloPromises.push(smart.firstRun);
+            }
           }
         }
       }
