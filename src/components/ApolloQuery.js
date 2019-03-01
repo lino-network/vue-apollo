@@ -53,6 +53,11 @@ export default {
       default: 0,
     },
 
+    initDeounce: {
+      type: Boolean,
+      default: false
+    },
+
     throttle: {
       type: Number,
       default: 0,
@@ -118,6 +123,7 @@ export default {
         fetchPolicy: this.fetchPolicy,
         pollInterval: this.pollInterval,
         debounce: this.debounce,
+        initDebounce: this.initDebounce,
         throttle: this.throttle,
         notifyOnNetworkStatusChange: this.notifyOnNetworkStatusChange,
         context () { return this.context },

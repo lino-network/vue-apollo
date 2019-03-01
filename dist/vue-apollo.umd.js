@@ -518,7 +518,14 @@
           var _cb = this.executeApollo.bind(this);
 
           _cb = this.options.throttle ? utils_2(_cb, this.options.throttle) : _cb;
-          _cb = this.options.debounce ? utils_3(_cb, this.options.debounce) : _cb;
+
+          if (this.options.debounce) {
+            if (this.options.initDebounce) {
+              _cb(this.options.variables.call(this.vm));
+            }
+
+            _cb = utils_3(_cb, this.options.debounce);
+          }
 
           this._watchers.push(this.vm.$watch(function () {
             return _this.options.variables.call(_this.vm);
@@ -708,7 +715,7 @@
     return SmartApollo;
   }();
 
-  var VUE_APOLLO_QUERY_KEYWORDS = ['variables', 'watch', 'update', 'result', 'error', 'loadingKey', 'watchLoading', 'skip', 'throttle', 'debounce', 'subscribeToMore', 'prefetch', 'manual'];
+  var VUE_APOLLO_QUERY_KEYWORDS = ['variables', 'watch', 'update', 'result', 'error', 'loadingKey', 'watchLoading', 'skip', 'throttle', 'debounce', 'initDebounce', 'subscribeToMore', 'prefetch', 'manual'];
 
   var SmartQuery =
   /*#__PURE__*/
@@ -1509,6 +1516,10 @@
         type: Number,
         default: 0
       },
+      initDeounce: {
+        type: Boolean,
+        default: false
+      },
       throttle: {
         type: Number,
         default: 0
@@ -1569,6 +1580,7 @@
           fetchPolicy: this.fetchPolicy,
           pollInterval: this.pollInterval,
           debounce: this.debounce,
+          initDebounce: this.initDebounce,
           throttle: this.throttle,
           notifyOnNetworkStatusChange: this.notifyOnNetworkStatusChange,
           context: function context() {
