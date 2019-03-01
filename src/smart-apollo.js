@@ -99,7 +99,12 @@ export default class SmartApollo {
     if (typeof this.options.variables === 'function') {
       let cb = this.executeApollo.bind(this)
       cb = this.options.throttle ? throttle(cb, this.options.throttle) : cb
-      cb = this.options.debounce ? debounce(cb, this.options.debounce) : cb
+      if (this.options.debounce) {
+        if (this.options.initDebounce) {
+          cb(this.options.variables.call(this.vm))
+        }
+        cb = debounce(cb, this.options.debounce)
+      }
       this._watchers.push(this.vm.$watch(() => this.options.variables.call(this.vm), cb, {
         immediate: true,
         deep: this.options.deep,
