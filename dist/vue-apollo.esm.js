@@ -1877,10 +1877,10 @@ function launch() {
       if (key.charAt(0) !== '$') {
         var options = apollo[key];
 
-        if (process.client || options.prefetch !== undefined && options.prefetch !== false && apollo.$prefetch !== false) {
+        if (!this.$isServer || options.prefetch !== undefined && options.prefetch !== false && apollo.$prefetch !== false) {
           var smart = this.$apollo.addSmartQuery(key, options);
 
-          if (process.server) {
+          if (this.$isServer) {
             this.$_apolloPromises.push(smart.firstRun);
           }
         }
