@@ -5,17 +5,18 @@ import CApolloQuery from './components/ApolloQuery'
 import CApolloSubscribeToMore from './components/ApolloSubscribeToMore'
 import CApolloMutation from './components/ApolloMutation'
 
-import { installMixin } from './mixin'
+import { installMixin, prefetchIDs } from './mixin'
 import { Globals, omit } from '../lib/utils'
 
 const keywords = [
   '$subscribe',
 ]
 
+export { prefetchIDs }
+
 export function install (Vue, options) {
   if (install.installed) return
   install.installed = true
-
   Globals.Vue = Vue
   const vueVersion = Vue.version.substr(0, Vue.version.indexOf('.'))
 

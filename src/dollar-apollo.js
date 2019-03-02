@@ -84,7 +84,7 @@ export class DollarApollo {
     return this.vm.$data.$apolloData.data
   }
 
-  addSmartQuery (key, options) {
+  addSmartQuery (key, options, forceDumb = false) {
     let finalOptions = reapply(options, this.vm)
 
     const apollo = this.vm.$options.apollo
@@ -105,7 +105,7 @@ export class DollarApollo {
       }
     }
 
-    const smart = this.queries[key] = new SmartQuery(this.vm, key, finalOptions, false)
+    const smart = this.queries[key] = new SmartQuery(this.vm, key, finalOptions, false, forceDumb)
     if (!this.vm.$isServer || finalOptions.prefetch !== false) {
       smart.autostart()
     }

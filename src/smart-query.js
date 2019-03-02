@@ -6,7 +6,7 @@ export default class SmartQuery extends SmartApollo {
   vueApolloSpecialKeys = VUE_APOLLO_QUERY_KEYWORDS
   _loading = false
 
-  constructor (vm, key, options, autostart = true) {
+  constructor (vm, key, options, autostart = true, forceDumb = false) {
     // Simple query
     if (!options.query) {
       const query = options
@@ -33,7 +33,7 @@ export default class SmartQuery extends SmartApollo {
       this.options.fetchPolicy = 'network-only'
     }
 
-    if (!options.manual) {
+    if (!options.manual && !forceDumb) {
       this.hasDataField = this.vm.$data.hasOwnProperty(key)
       if (this.hasDataField) {
         Object.defineProperty(this.vm.$data.$apolloData.data, key, {

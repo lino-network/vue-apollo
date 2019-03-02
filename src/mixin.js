@@ -50,6 +50,8 @@ function proxyData () {
   }
 }
 
+var prefetchIDs = {}
+
 function launch () {
   const apolloProvider = this.$apolloProvider
 
@@ -85,16 +87,46 @@ function launch () {
       enumerable: true,
       configurable: true,
     })
-
     // watchQuery
     for (let key in apollo) {
       if (key.charAt(0) !== '$') {
-        let options = apollo[key]
-        if (!this.$isServer || (options.prefetch !== undefined && options.prefetch !== false && apollo.$prefetch !== false)) {
-          const smart = this.$apollo.addSmartQuery(key, options);
-          if (this.$isServer) {
-            this.$_apolloPromises.push(smart.firstRun);
+        let options = apollo[key];
+        if (this.$isServer) {
+          let prefetchID = this.$store.state.userMeta.userMeta.prefetchID;
+          if (options.prefetch !== false && apollo.$prefetch !== false && options.prefetch !== undefined) {
+            if (!prefetchIDs[prefetchID]) {
+              prefetchIDs[prefetchID] = {time: new Date().getTime(), value: []};
+            } 
+            for (let i of options.query.definitions[0].selectionSet.selections) {
+              let variables = {};
+              for (let j of i.arguments) {
+                let variableName = j.name.value;
+                if (j.value && j.value.kind === 'ObjectValue') {
+                  for (let i of j.value.fields) {
+                    if (variables[variableName] === undefined) {
+                      variables[variableName] = {}
+                    }
+                    if (options.variables.call(this)[i.name.value] !== undefined) {
+                      variables[variableName][i.name.value] = options.variables.call(this)[i.name.value];
+                    } else {
+                      if (i.value.value !== undefined) {
+                        variables[variableName][i.name.value] = i.value.value
+                      }
+                    }
+                  }
+                } else {
+                  variables[variableName] = options.variables.call(this)[variableName];
+                }
+              }
+              prefetchIDs[prefetchID].value.push({ name: i.name.value, variables: variables });
+            }
+            options.fetchPolicy = 'cache-first';
+            this.$_apolloPromises.push(this.$apollo.addSmartQuery(key, options).firstRun);
+            options.fetchPolicy = 'network-only';
+            this.$apollo.addSmartQuery(key, options, true);
           }
+        } else {
+          this.$apollo.addSmartQuery(key, options)
         }
       }
     }
@@ -127,6 +159,8 @@ function destroy () {
     this.$_apollo = null
   }
 }
+
+export { prefetchIDs };
 
 export function installMixin (Vue, vueVersion) {
   Vue.mixin({
