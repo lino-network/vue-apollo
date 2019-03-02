@@ -93,7 +93,7 @@ function launch () {
         let options = apollo[key];
         if (this.$isServer) {
           let prefetchID = this.$store.state.userMeta.userMeta.prefetchID;
-          if (options.prefetch !== false && apollo.$prefetch !== false) {
+          if (options.prefetch !== false && apollo.$prefetch !== false && options.prefetch !== undefined) {
             if (!prefetchIDs[prefetchID]) {
               prefetchIDs[prefetchID] = {time: new Date().getTime(), value: []};
             } 
