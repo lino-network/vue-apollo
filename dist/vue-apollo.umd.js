@@ -762,9 +762,11 @@
         _this.options.fetchPolicy = 'network-only';
       }
 
-      if (!options.manual && !forceDumb) {
+      if (!options.manual) {
         _this.hasDataField = _this.vm.$data.hasOwnProperty(key);
+      }
 
+      if (!options.manual && !forceDumb) {
         if (_this.hasDataField) {
           Object.defineProperty(_this.vm.$data.$apolloData.data, key, {
             get: function get$$1() {
