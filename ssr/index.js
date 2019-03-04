@@ -79,8 +79,8 @@ exports.getStatesK = function (prefetchID, apolloProvider, options) {
         result[a[k]] = state[a[k]];
         //TODO check if rootquery alwasy have such plain object
         if (!addedIds.has(a[k])) {
-          recursiveAddNode(state[a[k]], result, state)
           addedIds.add(a[k]);
+          recursiveAddNode(state[a[k]], result, state)
         }
       } else if (typeof a[k] === 'object' && a[k]) {
         if (a[k].length !== undefined) {
