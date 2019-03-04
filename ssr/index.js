@@ -72,13 +72,15 @@ exports.getStatesK = function (prefetchID, apolloProvider, options) {
     exportNamespace: '',
   }, options)
   const states = {}
-  function recursiveAddNode(a, result, state, fromID) {
+  let addedIds = new Set();
+  function recursiveAddNode(a, result, state) {
     for (let k in a) {
       if (k == 'id') {
         result[a[k]] = state[a[k]];
         //TODO check if rootquery alwasy have such plain object
-        if (a[k] !== fromID) {
-          recursiveAddNode(state[a[k]], result, state, a[k])
+        if (!addedIds.has(a[k])) {
+          recursiveAddNode(state[a[k]], result, state)
+          addedIds.add(a[k]);
         }
       } else if (typeof a[k] === 'object' && a[k]) {
         if (a[k].length !== undefined) {
