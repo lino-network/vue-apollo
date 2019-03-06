@@ -29,9 +29,9 @@ export default class SmartQuery extends SmartApollo {
       this._firstRunReject = reject
     })
 
-    if (this.vm.$isServer) {
-      this.options.fetchPolicy = 'network-only'
-    }
+    // if (this.vm.$isServer) {
+    //   this.options.fetchPolicy = 'network-only'
+    // }
 
     if (!options.manual) {
       this.hasDataField = this.vm.$data.hasOwnProperty(key)

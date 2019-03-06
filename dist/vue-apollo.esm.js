@@ -750,11 +750,9 @@ function (_SmartApollo) {
     _this.firstRun = new Promise(function (resolve, reject) {
       _this._firstRunResolve = resolve;
       _this._firstRunReject = reject;
-    });
-
-    if (_this.vm.$isServer) {
-      _this.options.fetchPolicy = 'network-only';
-    }
+    }); // if (this.vm.$isServer) {
+    //   this.options.fetchPolicy = 'network-only'
+    // }
 
     if (!options.manual) {
       _this.hasDataField = _this.vm.$data.hasOwnProperty(key);
