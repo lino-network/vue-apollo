@@ -93,7 +93,7 @@ function launch () {
         if (!this.$isServer || (options.prefetch !== undefined && options.prefetch !== false && apollo.$prefetch !== false)) {
           const smart = this.$apollo.addSmartQuery(key, options);
           if (this.$isServer) {
-            this.$_apolloPromises.push(smart.firstRun.catch(() => {}));
+            this.$_apolloPromises.push(smart.firstRun.catch((err) => {console.log(err)}));
           }
         }
       }
