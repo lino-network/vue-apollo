@@ -1899,7 +1899,7 @@
             var smart = this.$apollo.addSmartQuery(key, options);
 
             if (this.$isServer) {
-              this.$_apolloPromises.push(smart.firstRun);
+              this.$_apolloPromises.push(smart.firstRun.catch(function () {}));
             }
           }
         }
