@@ -63,7 +63,7 @@ function launch () {
 
   if (apollo) {
     this.$_apolloPromises = []
-
+    this.$_apolloPromisesNetworkOnly = []
     if (!apollo.$init) {
       apollo.$init = true
 
@@ -123,7 +123,7 @@ function launch () {
             options.fetchPolicy = 'cache-first';
             this.$_apolloPromises.push(this.$apollo.addSmartQuery(key, options).firstRun);
             options.fetchPolicy = 'network-only';
-            this.$apollo.addSmartQuery(key, options, true);
+            this.$_apolloPromisesNetworkOnly.push(this.$apollo.addSmartQuery(key, options, true).firstRun);
           }
         } else {
           this.$apollo.addSmartQuery(key, options)
@@ -187,6 +187,16 @@ export function installMixin (Vue, vueVersion) {
       serverPrefetch () {
         if (this.$_apolloPromises) {
           return Promise.all(this.$_apolloPromises)
+                  .then(() => {
+                    if (this._apolloPromisesNetworkOnly) {
+                      Promise.all(this.$_apolloPromisesNetworkOnly)
+                        .then(() => {
+                          this.$apollo.queries = [];
+                        })
+                    } else {
+                      this.$apollo.queries = [];
+                    }
+                  })
         }
       },
     } : {},
