@@ -1897,13 +1897,9 @@ function launch() {
           var prefetchID = this.$store.state.userMeta.userMeta.prefetchID;
 
           if (options.prefetch !== false && apollo.$prefetch !== false && options.prefetch !== undefined) {
-            if (!prefetchIDs[prefetchID]) {
-              prefetchIDs[prefetchID] = {
-                time: new Date().getTime(),
-                value: []
-              };
-            }
-
+            // if (!prefetchIDs[prefetchID]) {
+            //   prefetchIDs[prefetchID] = {time: new Date().getTime(), value: []};
+            // } 
             var _iteratorNormalCompletion = true;
             var _didIteratorError = false;
             var _iteratorError = undefined;
@@ -1959,7 +1955,8 @@ function launch() {
                     } else {
                       variables[variableName] = options.variables.call(this)[variableName];
                     }
-                  }
+                  } // prefetchIDs[prefetchID].value.push({ name: i.name.value, variables: variables });
+
                 } catch (err) {
                   _didIteratorError2 = true;
                   _iteratorError2 = err;
@@ -1974,11 +1971,6 @@ function launch() {
                     }
                   }
                 }
-
-                prefetchIDs[prefetchID].value.push({
-                  name: i.name.value,
-                  variables: variables
-                });
               }
             } catch (err) {
               _didIteratorError = true;
