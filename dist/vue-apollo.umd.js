@@ -1870,6 +1870,7 @@
 
     if (apollo) {
       this.$_apolloPromises = [];
+      this.$_apolloPromisesNetworkOnly = [];
 
       if (!apollo.$init) {
         apollo.$init = true; // Default options applied to `apollo` options
@@ -1996,7 +1997,7 @@
               options.fetchPolicy = 'cache-first';
               this.$_apolloPromises.push(this.$apollo.addSmartQuery(key, options).firstRun);
               options.fetchPolicy = 'network-only';
-              this.$apollo.addSmartQuery(key, options, true);
+              this.$_apolloPromisesNetworkOnly.push(this.$apollo.addSmartQuery(key, options, true).firstRun);
             }
           } else {
             this.$apollo.addSmartQuery(key, options);
@@ -2050,8 +2051,18 @@
         proxyData.call(this);
       },
       serverPrefetch: function serverPrefetch() {
+        var _this3 = this;
+
         if (this.$_apolloPromises) {
-          return Promise.all(this.$_apolloPromises);
+          return Promise.all(this.$_apolloPromises).then(function () {
+            if (_this3._apolloPromisesNetworkOnly) {
+              Promise.all(_this3.$_apolloPromisesNetworkOnly).then(function () {
+                _this3.$apollo.queries = [];
+              });
+            } else {
+              _this3.$apollo.queries = [];
+            }
+          });
         }
       }
     } : {}, {
