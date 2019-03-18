@@ -120,10 +120,10 @@ function launch () {
               }
               // prefetchIDs[prefetchID].value.push({ name: i.name.value, variables: variables });
             }
-            options.fetchPolicy = 'cache-first';
-            this.$_apolloPromises.push(this.$apollo.addSmartQuery(key, options).firstRun);
-            options.fetchPolicy = 'network-only';
-            this.$_apolloPromisesNetworkOnly.push(this.$apollo.addSmartQuery(key, options, true).firstRun);
+            // options.fetchPolicy = 'cache-first';
+            // this.$_apolloPromises.push(this.$apollo.addSmartQuery(key, options).firstRun);
+            // options.fetchPolicy = 'network-only';
+            // this.$_apolloPromisesNetworkOnly.push(this.$apollo.addSmartQuery(key, options, true).firstRun);
           }
         } else {
           this.$apollo.addSmartQuery(key, options)
