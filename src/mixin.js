@@ -106,7 +106,7 @@ function launch () {
                     if (variables[variableName] === undefined) {
                       variables[variableName] = {}
                     }
-                    if (options.variables.call(this)[i.name.value] !== undefined) {
+                    if (typeof options.variables === "function" && options.variables.call(this)[i.name.value] !== undefined) {
                       variables[variableName][i.name.value] = options.variables.call(this)[i.name.value];
                     } else {
                       if (i.value.value !== undefined) {
