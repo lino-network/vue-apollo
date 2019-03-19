@@ -1936,7 +1936,7 @@ function launch() {
 
                           if (typeof options.variables === "function" && options.variables.call(this)[_i.name.value] !== undefined) {
                             variables[variableName][_i.name.value] = options.variables.call(this)[_i.name.value];
-                          } else {
+                          } else if (options.variables !== "function") {
                             if (_i.value.value !== undefined) {
                               variables[variableName][_i.name.value] = _i.value.value;
                             }
