@@ -1936,7 +1936,7 @@ function launch() {
 
                           if (typeof options.variables === "function" && options.variables.call(this)[_i.name.value] !== undefined) {
                             variables[variableName][_i.name.value] = options.variables.call(this)[_i.name.value];
-                          } else if (typeof options.variables !== "function") {
+                          } else {
                             if (_i.value.value !== undefined) {
                               variables[variableName][_i.name.value] = _i.value.value;
                             }
@@ -1957,7 +1957,13 @@ function launch() {
                         }
                       }
                     } else {
-                      variables[variableName] = options.variables.call(this)[variableName];
+                      if (typeof options.variables === "function" && options.variables.call(this)[variableName] !== undefined) {
+                        variables[variableName] = options.variables.call(this)[variableName];
+                      } else {
+                        if (options.variables[variableName] !== undefined) {
+                          variables[variableName] = options.variables[variableName];
+                        }
+                      }
                     }
                   }
                 } catch (err) {

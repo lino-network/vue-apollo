@@ -108,14 +108,20 @@ function launch () {
                     }
                     if (typeof options.variables === "function" && options.variables.call(this)[i.name.value] !== undefined) {
                       variables[variableName][i.name.value] = options.variables.call(this)[i.name.value];
-                    } else if (typeof options.variables !== "function") {
+                    } else {
                       if (i.value.value !== undefined) {
                         variables[variableName][i.name.value] = i.value.value
                       }
                     }
                   }
                 } else {
-                  variables[variableName] = options.variables.call(this)[variableName];
+                  if (typeof options.variables === "function" && options.variables.call(this)[variableName] !== undefined) {
+                    variables[variableName] = options.variables.call(this)[variableName];
+                  } else {
+                    if (options.variables[variableName] !== undefined) {
+                      variables[variableName] = options.variables[variableName]
+                    }
+                  }
                 }
               }
               prefetchIDs[prefetchID].value.push({ name: i.name.value, variables: variables });
