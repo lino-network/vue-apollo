@@ -1942,7 +1942,7 @@
 
                             if (typeof options.variables === "function" && options.variables.call(this)[_i.name.value] !== undefined) {
                               variables[variableName][_i.name.value] = options.variables.call(this)[_i.name.value];
-                            } else if (options.variables !== "function") {
+                            } else if (typeof options.variables !== "function") {
                               if (_i.value.value !== undefined) {
                                 variables[variableName][_i.name.value] = _i.value.value;
                               }

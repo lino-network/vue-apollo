@@ -108,7 +108,7 @@ function launch () {
                     }
                     if (typeof options.variables === "function" && options.variables.call(this)[i.name.value] !== undefined) {
                       variables[variableName][i.name.value] = options.variables.call(this)[i.name.value];
-                    } else if (options.variables !== "function") {
+                    } else if (typeof options.variables !== "function") {
                       if (i.value.value !== undefined) {
                         variables[variableName][i.name.value] = i.value.value
                       }
