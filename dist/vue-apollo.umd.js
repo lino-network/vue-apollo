@@ -1940,7 +1940,7 @@
                               variables[variableName] = {};
                             }
 
-                            if (options.variables.call(this)[_i.name.value] !== undefined) {
+                            if (typeof options.variables === "function" && options.variables.call(this)[_i.name.value] !== undefined) {
                               variables[variableName][_i.name.value] = options.variables.call(this)[_i.name.value];
                             } else {
                               if (_i.value.value !== undefined) {
