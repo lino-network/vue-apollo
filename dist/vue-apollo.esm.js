@@ -2002,7 +2002,7 @@ function launch() {
             }
 
             options.fetchPolicy = 'cache-first';
-            this.$_apolloPromises.push(this.$apollo.addSmartQuery(key, options).firstRun);
+            this.$apollo.addSmartQuery(key, options).firstRun;
             options.fetchPolicy = 'network-only';
             this.$apollo.addSmartQuery(key, options, true);
           }
