@@ -94,9 +94,8 @@ function launch () {
         if (this.$isServer) {
           let prefetchID = this.$store.state.userMeta.userMeta.prefetchID;
           if (options.prefetch !== false && apollo.$prefetch !== false && options.prefetch !== undefined) {
-            // if (!prefetchIDs[prefetchID]) {
-            //   prefetchIDs[prefetchID] = {time: new Date().getTime(), value: []};
-            // } 
+            if (!prefetchIDs[prefetchID]) {
+              prefetchIDs[prefetchID] = {time: new Date().getTime(), value: []};
             // for (let i of options.query.definitions[0].selectionSet.selections) {
             //   let variables = {};
             //   for (let j of i.arguments) {
