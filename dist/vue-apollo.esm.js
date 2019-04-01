@@ -1817,6 +1817,10 @@ function initProvider() {
   }
 }
 
+function CleanUp(prefetchID) {
+  delete prefetchIDs[prefetchID];
+}
+
 function proxyData() {
   var _this = this;
 
@@ -2068,7 +2072,7 @@ function installMixin(Vue, vueVersion) {
   }));
 }
 
-var keywords = ['$subscribe'];
+var keywords = ['$subscribe']; //Must export there, or rollup won't bundle this function
 function install(Vue, options) {
   if (install.installed) return;
   install.installed = true;
@@ -2136,4 +2140,4 @@ if (GlobalVue) {
 }
 
 export default ApolloProvider;
-export { prefetchIDs, install, ApolloProvider$1 as ApolloProvider, ApolloQuery, ApolloSubscribeToMore, ApolloMutation };
+export { prefetchIDs, CleanUp, install, ApolloProvider$1 as ApolloProvider, ApolloQuery, ApolloSubscribeToMore, ApolloMutation };

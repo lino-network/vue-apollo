@@ -5,14 +5,16 @@ import CApolloQuery from './components/ApolloQuery'
 import CApolloSubscribeToMore from './components/ApolloSubscribeToMore'
 import CApolloMutation from './components/ApolloMutation'
 
-import { installMixin, prefetchIDs } from './mixin'
+import { installMixin, prefetchIDs, CleanUp } from './mixin'
 import { Globals, omit } from '../lib/utils'
 
 const keywords = [
   '$subscribe',
 ]
 
-export { prefetchIDs }
+
+//Must export there, or rollup won't bundle this function
+export { prefetchIDs, CleanUp }
 
 export function install (Vue, options) {
   if (install.installed) return

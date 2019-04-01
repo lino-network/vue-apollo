@@ -1,5 +1,5 @@
 let prefetchIDs = require('../dist/vue-apollo.umd.js').prefetchIDs;
-
+let CleanUp = require('../dist/vue-apollo.umd.js').CleanUp;
 exports.getStates = function (apolloProvider, options) {
   const finalOptions = Object.assign({}, {
     exportNamespace: '',
@@ -118,6 +118,7 @@ exports.getStatesK = function (prefetchID, apolloProvider, options) {
       states[`${finalOptions.exportNamespace}${key}`] = state
     }
   }
-  delete prefetchID[prefetchID]
+  // CleanUp(prefetchID)
+  delete prefetchIDs[prefetchID]
   return states
 }

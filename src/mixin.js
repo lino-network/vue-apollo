@@ -26,6 +26,10 @@ function initProvider () {
   }
 }
 
+export function CleanUp(prefetchID) {
+  delete prefetchIDs[prefetchID]
+}
+
 function proxyData () {
   this.$_apolloInitData = {}
 
