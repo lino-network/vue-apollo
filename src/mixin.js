@@ -126,10 +126,10 @@ function launch () {
               }
               prefetchIDs[prefetchID].value.push({ name: i.name.value, variables: variables });
             }
-            options.fetchPolicy = 'cache-first';
-            this.$_apolloPromises.push(this.$apollo.addSmartQuery(key, options).firstRun);
-            options.fetchPolicy = 'network-only';
-            this.$apollo.addSmartQuery(key, options, true);
+            // options.fetchPolicy = 'cache-first';
+            // this.$_apolloPromises.push(this.$apollo.addSmartQuery(key, options).firstRun);
+            // options.fetchPolicy = 'network-only';
+            // this.$apollo.addSmartQuery(key, options, true);
           }
         } else {
           this.$apollo.addSmartQuery(key, options)
