@@ -119,6 +119,6 @@ exports.getStatesK = function (prefetchID, apolloProvider, options) {
     }
   }
   // CleanUp(prefetchID)
-  // delete prefetchIDs[prefetchID]
+  delete prefetchIDs[prefetchID]
   return states
 }
