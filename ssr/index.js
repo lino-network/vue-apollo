@@ -58,7 +58,7 @@ function isEquivalent(a, b) {
 checkIsSameQuery = function (queryName, queryDefinition) {
   let k = queryName.indexOf('(');
   if (k === -1) {
-    return false;
+    return (queryName === queryDefinition.name) && queryDefinition.variables === {} ;
   }
   if (queryName.slice(0, k) === queryDefinition.name) {
     let variableByQueryName = queryName.slice(queryDefinition.name.length + 1);
