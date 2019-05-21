@@ -1,5 +1,5 @@
-let prefetchIDs = require('../dist/vue-apollo.umd.js').prefetchIDs;
-let CleanUp = require('../dist/vue-apollo.umd.js').CleanUp;
+// let prefetchIDs = require('../dist/vue-apollo.umd.js').prefetchIDs;
+// let CleanUp = require('../dist/vue-apollo.umd.js').CleanUp;
 exports.getStates = function (apolloProvider, options) {
   const finalOptions = Object.assign({}, {
     exportNamespace: '',
@@ -25,31 +25,31 @@ exports.exportStates = function (apolloProvider, options) {
 
 
 function isEquivalent(a, b) {
-	if (typeof a !== typeof b) {
-  	return false;
+  if (typeof a !== typeof b) {
+    return false;
   }
   if (typeof a !== 'object') {
-  	return a == b;
+    return a == b;
   }
   if (!a && !b) {
-  	return true;
+    return true;
   } else if (!a || !b) {
-  	return false;
+    return false;
   }
   var aProps = Object.getOwnPropertyNames(a);
   var bProps = Object.getOwnPropertyNames(b);
 
   if (aProps.length != bProps.length) {
-      return false;
+    return false;
   }
   for (var i = 0; i < aProps.length; i++) {
-      var propName = aProps[i];
-      if (!(propName in b)) {
-      	return false;
-      }
-      if (!isEquivalent(a[propName], b[propName])) {
-          return false;
-      }
+    var propName = aProps[i];
+    if (!(propName in b)) {
+      return false;
+    }
+    if (!isEquivalent(a[propName], b[propName])) {
+      return false;
+    }
   }
 
   return true;
@@ -71,54 +71,54 @@ checkIsSameQuery = function (queryName, queryDefinition) {
   }
 }
 
-exports.getStatesK = function (prefetchID, apolloProvider, options) {
-  const finalOptions = Object.assign({}, {
-    exportNamespace: '',
-  }, options)
-  const states = {}
-  let addedIds = new Set();
-  function recursiveAddNode(a, result, state) {
-    for (let k in a) {
-      if (k == 'id') {
-        result[a[k]] = state[a[k]];
-        //TODO check if rootquery alwasy have such plain object
-        if (!addedIds.has(a[k])) {
-          addedIds.add(a[k]);
-          recursiveAddNode(state[a[k]], result, state)
-        }
-      } else if (typeof a[k] === 'object' && a[k]) {
-        if (a[k].length !== undefined) {
-          for (let n of a[k]) {
-            recursiveAddNode(n, result, state)
-          }
-        } else {
-          recursiveAddNode(a[k], result, state)
-        }
-      }
-    }
-  }
-  for (const key in apolloProvider.clients) {
-    const client = apolloProvider.clients[key]
-    const state = client.cache.extract()
-    let result = {}
-    if (prefetchID in prefetchIDs) {
-      let root_query = {};
-      // result['ROOT_QUERY'] = state['ROOT_QUERY'];
-      for (let i in state['ROOT_QUERY']) {
-        for (let j of prefetchIDs[prefetchID].value) {
-          if (checkIsSameQuery(i, j)) {
-            root_query[i] = state['ROOT_QUERY'][i]
-            recursiveAddNode(state['ROOT_QUERY'][i], result, state)
-          }
-        }
-      }
-      result['ROOT_QUERY'] = root_query;
-      states[`${finalOptions.exportNamespace}${key}`] = result;
-    } else {
-      states[`${finalOptions.exportNamespace}${key}`] = state
-    }
-  }
-  CleanUp(prefetchID)
-  delete prefetchIDs[prefetchID]
-  return states
-}
+// exports.getStatesK = function (prefetchID, apolloProvider, options) {
+//   const finalOptions = Object.assign({}, {
+//     exportNamespace: '',
+//   }, options)
+//   const states = {}
+//   let addedIds = new Set();
+//   function recursiveAddNode(a, result, state) {
+//     for (let k in a) {
+//       if (k == 'id') {
+//         result[a[k]] = state[a[k]];
+//         //TODO check if rootquery alwasy have such plain object
+//         if (!addedIds.has(a[k])) {
+//           addedIds.add(a[k]);
+//           recursiveAddNode(state[a[k]], result, state)
+//         }
+//       } else if (typeof a[k] === 'object' && a[k]) {
+//         if (a[k].length !== undefined) {
+//           for (let n of a[k]) {
+//             recursiveAddNode(n, result, state)
+//           }
+//         } else {
+//           recursiveAddNode(a[k], result, state)
+//         }
+//       }
+//     }
+//   }
+//   for (const key in apolloProvider.clients) {
+//     const client = apolloProvider.clients[key]
+//     const state = client.cache.extract()
+//     let result = {}
+//     if (prefetchID in prefetchIDs) {
+//       let root_query = {};
+//       // result['ROOT_QUERY'] = state['ROOT_QUERY'];
+//       for (let i in state['ROOT_QUERY']) {
+//         for (let j of prefetchIDs[prefetchID].value) {
+//           if (checkIsSameQuery(i, j)) {
+//             root_query[i] = state['ROOT_QUERY'][i]
+//             recursiveAddNode(state['ROOT_QUERY'][i], result, state)
+//           }
+//         }
+//       }
+//       result['ROOT_QUERY'] = root_query;
+//       states[`${finalOptions.exportNamespace}${key}`] = result;
+//     } else {
+//       states[`${finalOptions.exportNamespace}${key}`] = state
+//     }
+//   }
+//   CleanUp(prefetchID)
+//   delete prefetchIDs[prefetchID]
+//   return states
+// }

@@ -1,10 +1,10 @@
 import { Globals } from '../lib/utils'
 
-function hasProperty (holder, key) {
+function hasProperty(holder, key) {
   return typeof holder !== 'undefined' && Object.prototype.hasOwnProperty.call(holder, key)
 }
 
-function initProvider () {
+function initProvider() {
   const options = this.$options
   // ApolloProvider injection
   const optionValue = options.apolloProvider
@@ -30,7 +30,7 @@ export function CleanUp(prefetchID) {
   delete prefetchIDs[prefetchID]
 }
 
-function proxyData () {
+function proxyData() {
   this.$_apolloInitData = {}
 
   let apollo = this.$options.apollo
@@ -54,9 +54,9 @@ function proxyData () {
   }
 }
 
-var prefetchIDs = {}
+// var prefetchIDs = {}
 
-function launch () {
+function launch() {
   const apolloProvider = this.$apolloProvider
 
   if (this._apolloLaunched || !apolloProvider) return
@@ -66,7 +66,7 @@ function launch () {
   let apollo = this.$options.apollo
 
   if (apollo) {
-    this.$_apolloPromises = []
+    // this.$_apolloPromises = []
 
     if (!apollo.$init) {
       apollo.$init = true
@@ -92,54 +92,54 @@ function launch () {
       configurable: true,
     })
     // watchQuery
-    for (let key in apollo) {
-      if (key.charAt(0) !== '$') {
-        let options = apollo[key];
-        if (this.$isServer) {
-          let prefetchID = this.$store.state.userMeta.userMeta.prefetchID;
-          if (options.prefetch !== false && apollo.$prefetch !== false && options.prefetch !== undefined) {
-            if (!prefetchIDs[prefetchID]) {
-              prefetchIDs[prefetchID] = {time: new Date().getTime(), value: []};
-            } 
-            for (let i of options.query.definitions[0].selectionSet.selections) {
-              let variables = {};
-              for (let j of i.arguments) {
-                let variableName = j.name.value;
-                if (j.value && j.value.kind === 'ObjectValue') {
-                  for (let i of j.value.fields) {
-                    if (variables[variableName] === undefined) {
-                      variables[variableName] = {}
-                    }
-                    if (typeof options.variables === "function" && options.variables.call(this)[i.name.value] !== undefined) {
-                      variables[variableName][i.name.value] = options.variables.call(this)[i.name.value];
-                    } else {
-                      if (i.value.value !== undefined) {
-                        variables[variableName][i.name.value] = i.value.value
-                      }
-                    }
-                  }
-                } else {
-                  if (typeof options.variables === "function" && options.variables.call(this)[variableName] !== undefined) {
-                    variables[variableName] = options.variables.call(this)[variableName];
-                  } else {
-                    if (options.variables[variableName] !== undefined) {
-                      variables[variableName] = options.variables[variableName]
-                    }
-                  }
-                }
-              }
-              prefetchIDs[prefetchID].value.push({ name: i.name.value, variables: variables });
-            }
-            options.fetchPolicy = 'cache-first';
-            this.$_apolloPromises.push(this.$apollo.addSmartQuery(key, options).firstRun);
-            options.fetchPolicy = 'network-only';
-            this.$apollo.addSmartQuery(key, options, true);
-          }
-        } else {
-          this.$apollo.addSmartQuery(key, options)
-        }
-      }
-    }
+    // for (let key in apollo) {
+    //   if (key.charAt(0) !== '$') {
+    //     let options = apollo[key];
+    //     if (this.$isServer) {
+    //       let prefetchID = this.$store.state.userMeta.userMeta.prefetchID;
+    //       if (options.prefetch !== false && apollo.$prefetch !== false && options.prefetch !== undefined) {
+    //         if (!prefetchIDs[prefetchID]) {
+    //           prefetchIDs[prefetchID] = {time: new Date().getTime(), value: []};
+    //         } 
+    //         for (let i of options.query.definitions[0].selectionSet.selections) {
+    //           let variables = {};
+    //           for (let j of i.arguments) {
+    //             let variableName = j.name.value;
+    //             if (j.value && j.value.kind === 'ObjectValue') {
+    //               for (let i of j.value.fields) {
+    //                 if (variables[variableName] === undefined) {
+    //                   variables[variableName] = {}
+    //                 }
+    //                 if (typeof options.variables === "function" && options.variables.call(this)[i.name.value] !== undefined) {
+    //                   variables[variableName][i.name.value] = options.variables.call(this)[i.name.value];
+    //                 } else {
+    //                   if (i.value.value !== undefined) {
+    //                     variables[variableName][i.name.value] = i.value.value
+    //                   }
+    //                 }
+    //               }
+    //             } else {
+    //               if (typeof options.variables === "function" && options.variables.call(this)[variableName] !== undefined) {
+    //                 variables[variableName] = options.variables.call(this)[variableName];
+    //               } else {
+    //                 if (options.variables[variableName] !== undefined) {
+    //                   variables[variableName] = options.variables[variableName]
+    //                 }
+    //               }
+    //             }
+    //           }
+    //           prefetchIDs[prefetchID].value.push({ name: i.name.value, variables: variables });
+    //         }
+    //         options.fetchPolicy = 'cache-first';
+    //         this.$_apolloPromises.push(this.$apollo.addSmartQuery(key, options).firstRun);
+    //         options.fetchPolicy = 'network-only';
+    //         this.$apollo.addSmartQuery(key, options, true);
+    //       }
+    //     } else {
+    //       this.$apollo.addSmartQuery(key, options)
+    //     }
+    //   }
+    // }
 
     if (apollo.subscribe) {
       Globals.Vue.util.warn('vue-apollo -> `subscribe` option is deprecated. Use the `$subscribe` option instead.')
@@ -153,7 +153,7 @@ function launch () {
   }
 }
 
-function defineReactiveSetter ($apollo, key, value, deep) {
+function defineReactiveSetter($apollo, key, value, deep) {
   if (typeof value !== 'undefined') {
     if (typeof value === 'function') {
       $apollo.defineReactiveSetter(key, value, deep)
@@ -163,23 +163,23 @@ function defineReactiveSetter ($apollo, key, value, deep) {
   }
 }
 
-function destroy () {
+function destroy() {
   if (this.$_apollo) {
     this.$_apollo.destroy()
     this.$_apollo = null
   }
 }
 
-export { prefetchIDs };
+// export { prefetchIDs };
 
-export function installMixin (Vue, vueVersion) {
+export function installMixin(Vue, vueVersion) {
   Vue.mixin({
     ...vueVersion === '1' ? {
       init: initProvider,
     } : {},
 
     ...vueVersion === '2' ? {
-      data () {
+      data() {
         return {
           '$apolloData': {
             queries: {},
@@ -189,17 +189,17 @@ export function installMixin (Vue, vueVersion) {
         }
       },
 
-      beforeCreate () {
+      beforeCreate() {
         initProvider.call(this)
         proxyData.call(this)
       },
 
-      serverPrefetch () {
-        if (this.$_apolloPromises) {
-          return Promise.all(this.$_apolloPromises).catch(err => {
-            console.log('apollo prefetch error: ', err)
-          })
-        }
+      serverPrefetch() {
+        // if (this.$_apolloPromises) {
+        //   return Promise.all(this.$_apolloPromises).catch(err => {
+        //     console.log('apollo prefetch error: ', err)
+        //   })
+        // }
       },
     } : {},
 

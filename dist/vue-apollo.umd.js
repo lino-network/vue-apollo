@@ -1823,10 +1823,6 @@
     }
   }
 
-  function CleanUp(prefetchID) {
-    delete prefetchIDs[prefetchID];
-  }
-
   function proxyData() {
     var _this = this;
 
@@ -1859,9 +1855,8 @@
         _loop(key);
       }
     }
-  }
+  } // var prefetchIDs = {}
 
-  var prefetchIDs = {};
 
   function launch() {
     var _this2 = this;
@@ -1873,8 +1868,7 @@
     var apollo = this.$options.apollo;
 
     if (apollo) {
-      this.$_apolloPromises = [];
-
+      // this.$_apolloPromises = []
       if (!apollo.$init) {
         apollo.$init = true; // Default options applied to `apollo` options
 
@@ -1898,137 +1892,62 @@
         enumerable: true,
         configurable: true
       }); // watchQuery
-
-      for (var key in apollo) {
-        if (key.charAt(0) !== '$') {
-          var options = apollo[key];
-
-          if (this.$isServer) {
-            var prefetchID = this.$store.state.userMeta.userMeta.prefetchID;
-
-            if (options.prefetch !== false && apollo.$prefetch !== false && options.prefetch !== undefined) {
-              if (!prefetchIDs[prefetchID]) {
-                prefetchIDs[prefetchID] = {
-                  time: new Date().getTime(),
-                  value: []
-                };
-              }
-
-              var _iteratorNormalCompletion = true;
-              var _didIteratorError = false;
-              var _iteratorError = undefined;
-
-              try {
-                for (var _iterator = options.query.definitions[0].selectionSet.selections[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                  var i = _step.value;
-                  var variables = {};
-                  var _iteratorNormalCompletion2 = true;
-                  var _didIteratorError2 = false;
-                  var _iteratorError2 = undefined;
-
-                  try {
-                    for (var _iterator2 = i.arguments[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                      var j = _step2.value;
-                      var variableName = j.name.value;
-
-                      if (j.value && j.value.kind === 'ObjectValue') {
-                        var _iteratorNormalCompletion3 = true;
-                        var _didIteratorError3 = false;
-                        var _iteratorError3 = undefined;
-
-                        try {
-                          for (var _iterator3 = j.value.fields[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                            var _i = _step3.value;
-
-                            if (variables[variableName] === undefined) {
-                              variables[variableName] = {};
-                            }
-
-                            if (typeof options.variables === "function" && options.variables.call(this)[_i.name.value] !== undefined) {
-                              variables[variableName][_i.name.value] = options.variables.call(this)[_i.name.value];
-                            } else {
-                              if (_i.value.value !== undefined) {
-                                variables[variableName][_i.name.value] = _i.value.value;
-                              }
-                            }
-                          }
-                        } catch (err) {
-                          _didIteratorError3 = true;
-                          _iteratorError3 = err;
-                        } finally {
-                          try {
-                            if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
-                              _iterator3.return();
-                            }
-                          } finally {
-                            if (_didIteratorError3) {
-                              throw _iteratorError3;
-                            }
-                          }
-                        }
-                      } else {
-                        if (typeof options.variables === "function" && options.variables.call(this)[variableName] !== undefined) {
-                          variables[variableName] = options.variables.call(this)[variableName];
-                        } else {
-                          if (options.variables[variableName] !== undefined) {
-                            variables[variableName] = options.variables[variableName];
-                          }
-                        }
-                      }
-                    }
-                  } catch (err) {
-                    _didIteratorError2 = true;
-                    _iteratorError2 = err;
-                  } finally {
-                    try {
-                      if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-                        _iterator2.return();
-                      }
-                    } finally {
-                      if (_didIteratorError2) {
-                        throw _iteratorError2;
-                      }
-                    }
-                  }
-
-                  prefetchIDs[prefetchID].value.push({
-                    name: i.name.value,
-                    variables: variables
-                  });
-                }
-              } catch (err) {
-                _didIteratorError = true;
-                _iteratorError = err;
-              } finally {
-                try {
-                  if (!_iteratorNormalCompletion && _iterator.return != null) {
-                    _iterator.return();
-                  }
-                } finally {
-                  if (_didIteratorError) {
-                    throw _iteratorError;
-                  }
-                }
-              }
-
-              options.fetchPolicy = 'cache-first';
-              this.$_apolloPromises.push(this.$apollo.addSmartQuery(key, options).firstRun);
-              options.fetchPolicy = 'network-only';
-              this.$apollo.addSmartQuery(key, options, true);
-            }
-          } else {
-            this.$apollo.addSmartQuery(key, options);
-          }
-        }
-      }
+      // for (let key in apollo) {
+      //   if (key.charAt(0) !== '$') {
+      //     let options = apollo[key];
+      //     if (this.$isServer) {
+      //       let prefetchID = this.$store.state.userMeta.userMeta.prefetchID;
+      //       if (options.prefetch !== false && apollo.$prefetch !== false && options.prefetch !== undefined) {
+      //         if (!prefetchIDs[prefetchID]) {
+      //           prefetchIDs[prefetchID] = {time: new Date().getTime(), value: []};
+      //         } 
+      //         for (let i of options.query.definitions[0].selectionSet.selections) {
+      //           let variables = {};
+      //           for (let j of i.arguments) {
+      //             let variableName = j.name.value;
+      //             if (j.value && j.value.kind === 'ObjectValue') {
+      //               for (let i of j.value.fields) {
+      //                 if (variables[variableName] === undefined) {
+      //                   variables[variableName] = {}
+      //                 }
+      //                 if (typeof options.variables === "function" && options.variables.call(this)[i.name.value] !== undefined) {
+      //                   variables[variableName][i.name.value] = options.variables.call(this)[i.name.value];
+      //                 } else {
+      //                   if (i.value.value !== undefined) {
+      //                     variables[variableName][i.name.value] = i.value.value
+      //                   }
+      //                 }
+      //               }
+      //             } else {
+      //               if (typeof options.variables === "function" && options.variables.call(this)[variableName] !== undefined) {
+      //                 variables[variableName] = options.variables.call(this)[variableName];
+      //               } else {
+      //                 if (options.variables[variableName] !== undefined) {
+      //                   variables[variableName] = options.variables[variableName]
+      //                 }
+      //               }
+      //             }
+      //           }
+      //           prefetchIDs[prefetchID].value.push({ name: i.name.value, variables: variables });
+      //         }
+      //         options.fetchPolicy = 'cache-first';
+      //         this.$_apolloPromises.push(this.$apollo.addSmartQuery(key, options).firstRun);
+      //         options.fetchPolicy = 'network-only';
+      //         this.$apollo.addSmartQuery(key, options, true);
+      //       }
+      //     } else {
+      //       this.$apollo.addSmartQuery(key, options)
+      //     }
+      //   }
+      // }
 
       if (apollo.subscribe) {
         utils_1.Vue.util.warn('vue-apollo -> `subscribe` option is deprecated. Use the `$subscribe` option instead.');
       }
 
       if (apollo.$subscribe) {
-        for (var _key in apollo.$subscribe) {
-          this.$apollo.addSmartSubscription(_key, apollo.$subscribe[_key]);
+        for (var key in apollo.$subscribe) {
+          this.$apollo.addSmartSubscription(key, apollo.$subscribe[key]);
         }
       }
     }
@@ -2049,7 +1968,9 @@
       this.$_apollo.destroy();
       this.$_apollo = null;
     }
-  }
+  } // export { prefetchIDs };
+
+
   function installMixin(Vue, vueVersion) {
     Vue.mixin(_objectSpread({}, vueVersion === '1' ? {
       init: initProvider
@@ -2067,12 +1988,11 @@
         initProvider.call(this);
         proxyData.call(this);
       },
-      serverPrefetch: function serverPrefetch() {
-        if (this.$_apolloPromises) {
-          return Promise.all(this.$_apolloPromises).catch(function (err) {
-            console.log('apollo prefetch error: ', err);
-          });
-        }
+      serverPrefetch: function serverPrefetch() {// if (this.$_apolloPromises) {
+        //   return Promise.all(this.$_apolloPromises).catch(err => {
+        //     console.log('apollo prefetch error: ', err)
+        //   })
+        // }
       }
     } : {}, {
       created: launch,
