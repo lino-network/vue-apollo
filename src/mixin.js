@@ -1,10 +1,10 @@
 import { Globals } from '../lib/utils'
 
-function hasProperty (holder, key) {
+function hasProperty(holder, key) {
   return typeof holder !== 'undefined' && Object.prototype.hasOwnProperty.call(holder, key)
 }
 
-function initProvider () {
+function initProvider() {
   const options = this.$options
   // ApolloProvider injection
   const optionValue = options.apolloProvider
@@ -26,7 +26,7 @@ function initProvider () {
   }
 }
 
-function proxyData () {
+function proxyData() {
   this.$_apolloInitData = {}
 
   let apollo = this.$options.apollo
@@ -50,7 +50,7 @@ function proxyData () {
   }
 }
 
-function launch () {
+function launch() {
   const apolloProvider = this.$apolloProvider
 
   if (this._apolloLaunched || !apolloProvider) return
@@ -111,7 +111,7 @@ function launch () {
   }
 }
 
-function defineReactiveSetter ($apollo, key, value, deep) {
+function defineReactiveSetter($apollo, key, value, deep) {
   if (typeof value !== 'undefined') {
     if (typeof value === 'function') {
       $apollo.defineReactiveSetter(key, value, deep)
@@ -121,21 +121,21 @@ function defineReactiveSetter ($apollo, key, value, deep) {
   }
 }
 
-function destroy () {
+function destroy() {
   if (this.$_apollo) {
     this.$_apollo.destroy()
     this.$_apollo = null
   }
 }
 
-export function installMixin (Vue, vueVersion) {
+export function installMixin(Vue, vueVersion) {
   Vue.mixin({
     ...vueVersion === '1' ? {
       init: initProvider,
     } : {},
 
     ...vueVersion === '2' ? {
-      data () {
+      data() {
         return {
           '$apolloData': {
             queries: {},
@@ -145,14 +145,16 @@ export function installMixin (Vue, vueVersion) {
         }
       },
 
-      beforeCreate () {
+      beforeCreate() {
         initProvider.call(this)
         proxyData.call(this)
       },
 
-      serverPrefetch () {
+      serverPrefetch() {
         if (this.$_apolloPromises) {
-          return Promise.all(this.$_apolloPromises)
+          return Promise.all(this.$_apolloPromises).catch(err => {
+            console.log('apollo prefetch error: ', err)
+          })
         }
       },
     } : {},
