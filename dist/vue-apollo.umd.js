@@ -2001,6 +2001,7 @@
   }
 
   var keywords = ['$subscribe']; //Must export there, or rollup won't bundle this function
+
   function install(Vue, options) {
     if (install.installed) return;
     install.installed = true;
@@ -2067,8 +2068,6 @@
     GlobalVue.use(ApolloProvider);
   }
 
-  exports.prefetchIDs = prefetchIDs;
-  exports.CleanUp = CleanUp;
   exports.install = install;
   exports.ApolloProvider = ApolloProvider$1;
   exports.ApolloQuery = ApolloQuery;

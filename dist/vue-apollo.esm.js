@@ -1995,6 +1995,7 @@ function installMixin(Vue, vueVersion) {
 }
 
 var keywords = ['$subscribe']; //Must export there, or rollup won't bundle this function
+
 function install(Vue, options) {
   if (install.installed) return;
   install.installed = true;
@@ -2062,4 +2063,4 @@ if (GlobalVue) {
 }
 
 export default ApolloProvider;
-export { prefetchIDs, CleanUp, install, ApolloProvider$1 as ApolloProvider, ApolloQuery, ApolloSubscribeToMore, ApolloMutation };
+export { install, ApolloProvider$1 as ApolloProvider, ApolloQuery, ApolloSubscribeToMore, ApolloMutation };

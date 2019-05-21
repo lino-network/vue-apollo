@@ -14,7 +14,6 @@ const keywords = [
 
 
 //Must export there, or rollup won't bundle this function
-export { prefetchIDs, CleanUp }
 
 export function install(Vue, options) {
   if (install.installed) return
