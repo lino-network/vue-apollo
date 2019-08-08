@@ -90,10 +90,10 @@ function launch() {
     for (let key in apollo) {
       if (key.charAt(0) !== '$') {
         let options = apollo[key]
-        if (!this.$isServer || (options.prefetch !== undefined && options.prefetch !== false && apollo.$prefetch !== false)) {
+        if (!this.$isServer) {
           const smart = this.$apollo.addSmartQuery(key, options);
           if (this.$isServer) {
-            this.$_apolloPromises.push(smart.firstRun);
+            // this.$_apolloPromises.push(smart.firstRun);
           }
         }
       }
@@ -151,11 +151,11 @@ export function installMixin(Vue, vueVersion) {
       },
 
       serverPrefetch() {
-        if (this.$_apolloPromises) {
-          return Promise.all(this.$_apolloPromises).catch(err => {
-            console.log('apollo prefetch error: ', err)
-          })
-        }
+        // if (this.$_apolloPromises) {
+        //   return Promise.all(this.$_apolloPromises).catch(err => {
+        //     console.log('apollo prefetch error: ', err)
+        //   })
+        // }
       },
     } : {},
 
