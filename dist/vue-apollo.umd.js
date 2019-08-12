@@ -155,24 +155,8 @@
     return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest();
   }
 
-  function _toConsumableArray(arr) {
-    return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
-  }
-
-  function _arrayWithoutHoles(arr) {
-    if (Array.isArray(arr)) {
-      for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
-
-      return arr2;
-    }
-  }
-
   function _arrayWithHoles(arr) {
     if (Array.isArray(arr)) return arr;
-  }
-
-  function _iterableToArray(iter) {
-    if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
   }
 
   function _iterableToArrayLimit(arr, i) {
@@ -199,10 +183,6 @@
     }
 
     return _arr;
-  }
-
-  function _nonIterableSpread() {
-    throw new TypeError("Invalid attempt to spread non-iterable instance");
   }
 
   function _nonIterableRest() {
@@ -647,15 +627,15 @@
         if (catched) return;
 
         if (error.graphQLErrors && error.graphQLErrors.length !== 0) {
-          console.error("GraphQL execution errors for ".concat(this.type, " '").concat(this.key, "'"));
+          // console.error(`GraphQL execution errors for ${this.type} '${this.key}'`)
           var _iteratorNormalCompletion3 = true;
           var _didIteratorError3 = false;
           var _iteratorError3 = undefined;
 
           try {
-            for (var _iterator3 = error.graphQLErrors[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+            for (var _iterator3 = error.graphQLErrors[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {// console.error(e)
+
               var e = _step3.value;
-              console.error(e);
             }
           } catch (err) {
             _didIteratorError3 = true;
@@ -671,19 +651,7 @@
               }
             }
           }
-        } else if (error.networkError) {
-          console.error("Error sending the ".concat(this.type, " '").concat(this.key, "'"), error.networkError);
-        } else {
-          console.error("[vue-apollo] An error has occured for ".concat(this.type, " '").concat(this.key, "'"));
-
-          if (Array.isArray(error)) {
-            var _console;
-
-            (_console = console).error.apply(_console, _toConsumableArray(error));
-          } else {
-            console.error(error);
-          }
-        }
+        } else if (error.networkError) ;
       }
     }, {
       key: "destroy",

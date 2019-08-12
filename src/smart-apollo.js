@@ -4,7 +4,7 @@ export default class SmartApollo {
   type = null
   vueApolloSpecialKeys = []
 
-  constructor (vm, key, options, autostart = true) {
+  constructor(vm, key, options, autostart = true) {
     this.vm = vm
     this.key = key
     this.initialOptions = options
@@ -18,7 +18,7 @@ export default class SmartApollo {
     }
   }
 
-  autostart () {
+  autostart() {
     if (typeof this.options.skip === 'function') {
       this._skipWatcher = this.vm.$watch(this.options.skip.bind(this.vm), this.skipChanged.bind(this), {
         immediate: true,
@@ -31,17 +31,17 @@ export default class SmartApollo {
     }
   }
 
-  skipChanged (value, oldValue) {
+  skipChanged(value, oldValue) {
     if (value !== oldValue) {
       this.skip = value
     }
   }
 
-  get skip () {
+  get skip() {
     return this._skip
   }
 
-  set skip (value) {
+  set skip(value) {
     if (value) {
       this.stop()
     } else {
@@ -50,14 +50,14 @@ export default class SmartApollo {
     this._skip = value
   }
 
-  refresh () {
+  refresh() {
     if (!this._skip) {
       this.stop()
       this.start()
     }
   }
 
-  start () {
+  start() {
     this.starting = true
 
     // Query callback
@@ -68,8 +68,8 @@ export default class SmartApollo {
         this.options.query = query
         this.refresh()
       }, {
-        deep: this.options.deep,
-      }))
+          deep: this.options.deep,
+        }))
     }
     // Query callback
     if (typeof this.initialOptions.document === 'function') {
@@ -79,8 +79,8 @@ export default class SmartApollo {
         this.options.document = document
         this.refresh()
       }, {
-        deep: this.options.deep,
-      }))
+          deep: this.options.deep,
+        }))
     }
 
     // Apollo context
@@ -91,8 +91,8 @@ export default class SmartApollo {
         this.options.context = context
         this.refresh()
       }, {
-        deep: this.options.deep,
-      }))
+          deep: this.options.deep,
+        }))
     }
 
     // GraphQL Variables
@@ -114,7 +114,7 @@ export default class SmartApollo {
     }
   }
 
-  stop () {
+  stop() {
     for (const unwatch of this._watchers) {
       unwatch()
     }
@@ -125,22 +125,22 @@ export default class SmartApollo {
     }
   }
 
-  generateApolloOptions (variables) {
+  generateApolloOptions(variables) {
     const apolloOptions = omit(this.options, this.vueApolloSpecialKeys)
     apolloOptions.variables = variables
     return apolloOptions
   }
 
-  executeApollo (variables) {
+  executeApollo(variables) {
     this.starting = false
   }
 
-  nextResult (result) {
+  nextResult(result) {
     const { error } = result
     if (error) addGqlError(error)
   }
 
-  callHandlers (handlers, ...args) {
+  callHandlers(handlers, ...args) {
     let catched = false
     for (const handler of handlers) {
       if (handler) {
@@ -154,7 +154,7 @@ export default class SmartApollo {
     return catched
   }
 
-  errorHandler (...args) {
+  errorHandler(...args) {
     return this.callHandlers([
       this.options.error,
       this.vm.$apollo.error,
@@ -162,7 +162,7 @@ export default class SmartApollo {
     ], ...args)
   }
 
-  catchError (error) {
+  catchError(error) {
     addGqlError(error)
 
     const catched = this.errorHandler(error)
@@ -170,23 +170,23 @@ export default class SmartApollo {
     if (catched) return
 
     if (error.graphQLErrors && error.graphQLErrors.length !== 0) {
-      console.error(`GraphQL execution errors for ${this.type} '${this.key}'`)
+      // console.error(`GraphQL execution errors for ${this.type} '${this.key}'`)
       for (let e of error.graphQLErrors) {
-        console.error(e)
+        // console.error(e)
       }
     } else if (error.networkError) {
-      console.error(`Error sending the ${this.type} '${this.key}'`, error.networkError)
+      // console.error(`Error sending the ${this.type} '${this.key}'`, error.networkError)
     } else {
-      console.error(`[vue-apollo] An error has occured for ${this.type} '${this.key}'`)
+      // console.error(`[vue-apollo] An error has occured for ${this.type} '${this.key}'`)
       if (Array.isArray(error)) {
-        console.error(...error)
+        // console.error(...error)
       } else {
-        console.error(error)
+        // console.error(error)
       }
     }
   }
 
-  destroy () {
+  destroy() {
     if (this._destroyed) return
 
     this._destroyed = true
