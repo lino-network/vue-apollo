@@ -1915,8 +1915,7 @@ function installMixin(Vue, vueVersion) {
     },
     serverPrefetch: function serverPrefetch() {
       if (this.$_apolloPromises) {
-        return Promise.all(this.$_apolloPromises).catch(function (err) {
-          console.log('apollo prefetch error: ', err);
+        return Promise.all(this.$_apolloPromises).catch(function (err) {// console.log('apollo prefetch error: ', err)
         });
       }
     }
